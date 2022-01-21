@@ -1,21 +1,117 @@
+name: Local Test
 on:
   workflow_dispatch:
   push:
     branches: [ main ]
 
 env:
-  ACTIONS_STEP_DEBUG: "true"
+  ASSERT_HASH_SINGLE_FILE: "75492e73923c636656412a37896bc835:d41d8cd98f00b204"
+  ASSERT_HASH_WITH_VARIANT: "75492e73923c636656412a37896bc835:acbd18db4cc2f85c"
+  ASSERT_HASH_FULL_SET: "4a36680ab8f39b539b6053cbfd9314c3:3858f62230ac3c91"
 
 jobs:
-  hello_world_job:
+  single_file_hash:
     runs-on: ubuntu-latest
-    name: A job to say hello
+    name: Single file test
     steps:
-      - uses: actions/checkout@v2
-      - id: foo
-        uses: KEINOS/gh-action-hash-for-cache@v0.1
+      - name: Checkout
+        uses: actions/checkout@v2
+
+      - name: Run action locally and expose results
+        id: foo
+        uses: ./
+        with:
+          path: "./testdata/sample.txt"
+
+      - name: Equal assertion test
+        run: |
+          [[ "${{ env.ASSERT_HASH_SINGLE_FILE }}" == "${{ steps.foo.outputs.hash }}" ]]
+        shell: bash
+
+  with_variant:
+    runs-on: ubuntu-latest
+    name: With variant test
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v2
+
+      - name: Run action locally and expose results
+        id: foo
+        uses: ./
+        with:
+          path: "./testdata/sample.txt"
+          variant: "foo"
+
+      - name: Equal assertion test
+        run: |
+          [[ "${{ env.ASSERT_HASH_WITH_VARIANT }}" == "${{ steps.foo.outputs.hash }}" ]]
+        shell: bash
+
+  full_set:
+    runs-on: ubuntu-latest
+    name: Files and variant test
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v2
+
+      - name: Run action locally and expose results
+        id: foo
+        uses: ./
         with:
           path: |
             ./testdata/sample.txt
-      - run: echo "current hash ${{ steps.foo.outputs.hash }}""
+            ./testdata/sample2.txt
+          variant: "foobar"
+
+      - name: Equal assertion test
+        run: |
+          [[ "${{ env.ASSERT_HASH_FULL_SET }}" == "${{ steps.foo.outputs.hash }}" ]]
+        shell: bash
+
+  file_change:
+    runs-on: ubuntu-latest
+    name: Files changes test
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v2
+
+      - name: Make change
+        run: |
+          : # Append a new line to samples
+          echo "foo" >> ./testdata/sample.txt
+          echo "bar" >> ./testdata/sample2.txt
+
+      - name: Run action locally and expose results
+        id: foo
+        uses: ./
+        with:
+          path: |
+            ./testdata/sample.txt
+            ./testdata/sample2.txt
+          variant: "foobar"
+
+      - name: NotEqual assertion test
+        run: |
+          [[ "${{ env.ASSERT_HASH_FULL_SET }}" != "${{ steps.foo.outputs.hash }}" ]]
+        shell: bash
+
+  variant_change:
+    runs-on: ubuntu-latest
+    name: Variant changes test
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v2
+
+      - name: Run action locally and expose results
+        id: foo
+        uses: ./
+        with:
+          path: |
+            ./testdata/sample.txt
+            ./testdata/sample2.txt
+          variant: "foobarbuzz"
+
+      - name: NotEqual assertion test
+        run: |
+          [[ "${{ env.ASSERT_HASH_FULL_SET }}" != "${{ steps.foo.outputs.hash }}" ]]
         shell: bash

@@ -1,4 +1,4 @@
-name: "Hash for cache"
+name: "File Hash for cache"
 description: 'Generates a hash of the given entry for cache key.'
 author: 'KEINOS'
 
@@ -24,11 +24,25 @@ runs:
   steps:
     - id: inner-hash
       run: |
-        echo "::debug::Files to hash: ${path}"
-        HASH_IMAGE=${{ hashFiles(${path}) }}
-        echo "::debug::Image hash: ${HASH_IMAGE}"
-        VARIANT=variant
-        echo "::debug::Variant: ${VARIANT}"
-        HASHED="${HASH_IMAGE:0:7}:${VARIANT}"
+        : # Get path from the inputs
+        PATHS="${{ inputs.path }}"
+        : # Loop each path
+        PATHS="${{ inputs.path }}"
+        result=""
+        for path in ${PATHS//,/}; do
+          hashTmp="$(sha512sum "${path}" | cut -d ' ' -f 1)"
+          echo "::debug:: File: ${path} --> SHA512:${hashTmp}"
+          : # Stretch (re-hash with previous hash as salt)
+          result=$(echo -n "${hashTmp}${result}" | openssl sha256 | cut -d ' ' -f 2)
+          echo "::debug:: Current hash: ${result}"
+        done
+        : # Get variant's hash
+        VARIANT=${{ inputs.variant }}
+        echo "::debug:: Given variant: ${VARIANT}"
+        VARIANT=$(echo -n "${VARIANT}" | openssl md5 | cut -d ' ' -f 2)
+        ## Expose the final output
+        HASHED="${result:0:32}:${VARIANT:0:16}"
+        echo "::debug:: Final hash with variant: ${HASHED}"
         echo "::set-output name=hashed::${HASHED}"
+        echo "Final hash: ${HASHED}"
       shell: bash
