@@ -1,0 +1,34 @@
+name: "Hash for cache"
+description: 'Generates a hash of the given entry for cache key.'
+author: 'KEINOS'
+
+branding:
+  icon: hash
+  color: blue
+
+inputs:
+  path:
+    description: 'A list of files that will be hashed.'
+    required: true
+  variant:
+    description: 'A string to be hashed.'
+    required: false
+
+outputs:
+  hash:
+    description: 'The hash of the given entry.'
+    value: ${{ steps.inner-hash.outputs.hashed }}
+
+runs:
+  using: "composite"
+  steps:
+    - id: inner-hash
+      run: |
+        echo "::debug::Files to hash: ${path}"
+        HASH_IMAGE=${{ hashFiles(${path}) }}
+        echo "::debug::Image hash: ${HASH_IMAGE}"
+        VARIANT=variant
+        echo "::debug::Variant: ${VARIANT}"
+        HASHED="${HASH_IMAGE:0:7}:${VARIANT}"
+        echo "::set-output name=hashed::${HASHED}"
+      shell: bash
