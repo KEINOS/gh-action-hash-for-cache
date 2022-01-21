@@ -5,9 +5,9 @@ on:
     branches: [ main ]
 
 env:
-  ASSERT_HASH_SINGLE_FILE: "75492e73923c636656412a37896bc835:d41d8cd98f00b204"
-  ASSERT_HASH_WITH_VARIANT: "75492e73923c636656412a37896bc835:acbd18db4cc2f85c"
-  ASSERT_HASH_FULL_SET: "4a36680ab8f39b539b6053cbfd9314c3:3858f62230ac3c91"
+  ASSERT_HASH_SINGLE_FILE: "a88123e024b2e9d91558cce56d286111:cf83e1357eefb8bd"
+  ASSERT_HASH_WITH_VARIANT: "a88123e024b2e9d91558cce56d286111:f7fbba6e0636f890"
+  ASSERT_HASH_FULL_SET: "439c756cf3d473983837ce0bbe71ca96:0a50261ebd1a390f"
 
 jobs:
   single_file_hash:
@@ -37,7 +37,7 @@ jobs:
 
       - name: Run action locally and expose results
         id: foo
-        uses: ./
+        uses: KEINOS/gh-action-hash-for-cache@main
         with:
           path: "./testdata/sample.txt"
           variant: "foo"

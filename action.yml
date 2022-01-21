@@ -17,32 +17,10 @@ inputs:
 outputs:
   hash:
     description: 'The hash of the given entry.'
-    value: ${{ steps.inner-hash.outputs.hashed }}
 
 runs:
-  using: "composite"
-  steps:
-    - id: inner-hash
-      run: |
-        : # Get path from the inputs
-        PATHS="${{ inputs.path }}"
-        : # Loop each path
-        PATHS="${{ inputs.path }}"
-        result=""
-        for path in ${PATHS//,/}; do
-          hashTmp="$(sha512sum "${path}" | cut -d ' ' -f 1)"
-          echo "::debug:: File: ${path} --> SHA512:${hashTmp}"
-          : # Stretch (re-hash with previous hash as salt)
-          result=$(echo -n "${hashTmp}${result}" | openssl sha256 | cut -d ' ' -f 2)
-          echo "::debug:: Current hash: ${result}"
-        done
-        : # Get variant's hash
-        VARIANT=${{ inputs.variant }}
-        echo "::debug:: Given variant: ${VARIANT}"
-        VARIANT=$(echo -n "${VARIANT}" | openssl md5 | cut -d ' ' -f 2)
-        ## Expose the final output
-        HASHED="${result:0:32}:${VARIANT:0:16}"
-        echo "::debug:: Final hash with variant: ${HASHED}"
-        echo "::set-output name=hashed::${HASHED}"
-        echo "Final hash: ${HASHED}"
-      shell: bash
+  using: 'docker'
+  image: 'Dockerfile'
+  args:
+    - ${{ inputs.path }}
+    - ${{ inputs.variant }}

@@ -1,6 +1,6 @@
 [![Local Test](https://github.com/KEINOS/gh-action-hash-for-cache/actions/workflows/test.yml/badge.svg?branch=main)](https://github.com/KEINOS/gh-action-hash-for-cache/actions/workflows/test.yml "View status on GitHub")
 
-# Hash Generator for Caching
+# GitHub Actions to Generate hashFile for Caching
 
 [This GitHub Action](https://github.com/KEINOS/gh-action-hash-for-cache) is a helper action for "[actions/cache@v2](https://github.com/marketplace/actions/cache)".
 **It simply generates a hash of the given entry**, which is useful as a cache key.
@@ -12,7 +12,7 @@ It is also possible to specify a time-limited variant.
 
 ```yaml
     - name: <name of the step to display>
-      uses: keinos/hash-for-cache@v1
+      uses: KEINOS/gh-action-hash-for-cache@main
       id: <ID to call the hash from other steps>
       with:
         path: |
@@ -31,7 +31,7 @@ In this example, if "composer.json" or "composer.lock" is changed, the hash will
 
 ```yaml
 - id: hash-now-dont-you-cry
-  uses: keinos/hash-for-cache@v1
+  uses: KEINOS/gh-action-hash-for-cache@main
   with:
     path: |
       ./composer.json
@@ -54,7 +54,7 @@ In this example, if "go.mod" or "go.sum" is modified **or the month is changed**
 ```yaml
 - name: Get hash key
   id: hash-now-dont-you-cry
-  uses: keinos/hash-for-cache@v1
+  uses: KEINOS/gh-action-hash-for-cache@main
   with:
     path: |
       ./go.mod
