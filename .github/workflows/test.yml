@@ -13,7 +13,7 @@ jobs:
     steps:
       - uses: actions/checkout@v2
       - id: foo
-        uses: KEINOS/gh-action-hash-for-cache@master
+        uses: KEINOS/gh-action-hash-for-cache@v1
         with:
           path: |
             ./testdata/sample.txt
