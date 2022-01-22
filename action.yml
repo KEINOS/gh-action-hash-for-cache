@@ -17,10 +17,52 @@ inputs:
 outputs:
   hash:
     description: 'The hash of the given entry.'
+    value: ${{ steps.local-hash.outputs.hash }}
 
 runs:
-  using: 'docker'
-  image: 'Dockerfile'
-  args:
-    - ${{ inputs.path }}
-    - ${{ inputs.variant }}
+  using: "composite"
+  steps:
+    - id: local-hash
+      run: |
+        : # Set basic variables
+        RUNNER_OS="${{ runner.os }}"
+        echo "::debug:: RUNNER OS: ${RUNNER_OS}"
+        PATHS="${{ inputs.path }}"
+        echo "::debug:: INPUT PATH: ${PATHS}"
+        VARIANT="${{ inputs.variant }}"
+        echo "::debug:: IN VARIANT: ${VARIANT}"
+        :
+        : # Wrapper function for sha512sum functionality
+        if [ "${RUNNER_OS}" == "macOS" ]; then
+          hash512() {
+            echo -n "${1}" | shasum -a 512 | cut -d ' ' -f 1
+          }
+        else
+          : # For Linux and Windows git-bash
+          hash512() {
+            echo -n "${1}" | sha512sum | cut -d ' ' -f 1
+          }
+        fi
+        :
+        : # File hashing by path iteration.
+        currHash=""
+        for path in $PATHS; do
+          if [ -e "$path" ]; then
+            : # Hash the file
+            hashTemp=$(hash512 "$(cat "$path")")
+            echo "::debug:: FILE HASH: ${hashTemp}(PATH: ${path})"
+            :
+            : # Stretching (re-hash with previous hash as salt)
+            currHash="$(hash512 "${hashTemp}${currHash}")"
+            echo "::debug:: CURRENT HASH: ${currHash}"
+          fi
+        done
+        :
+        : # String hashing of variant
+        variHash="$(hash512 "${VARIANT}")"
+        echo "::debug:: VARIANT HASH: ${variHash}"
+        :
+        : # Final hash with the variant
+        HASHED="${currHash:0:32}:${variHash:0:16}"
+        echo "::set-output name=hash::${HASHED}"
+      shell: bash

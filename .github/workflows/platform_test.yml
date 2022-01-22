@@ -1,0 +1,38 @@
+name: linux-mac-win
+
+on:
+  workflow_dispatch:
+  push:
+    branches: [ main ]
+
+env:
+  ACTIONS_STEP_DEBUG: "true"
+
+jobs:
+  hash_for_cache:
+    name: hash_for_cache
+
+    strategy:
+      matrix:
+        platform: [ubuntu-latest, macos-latest, windows-latest]
+
+    runs-on: ${{ matrix.platform }}
+
+    steps:
+      - uses: actions/checkout@v2
+
+      - name: Run action locally and expose results
+        id: foo
+        uses: ./
+        with:
+          path: |
+            ./testdata/sample1.txt
+            ./testdata/sample2.txt
+          variant: "foobar"
+
+      - run: |
+          expect="b28254efe7ae2354ade2471b6a7f2fd9:0a50261ebd1a390f"
+          actual="${{ steps.foo.outputs.hash }}"
+          : # Assert Equal
+          [[ "${expect}" == "${actual}" ]]
+        shell: bash

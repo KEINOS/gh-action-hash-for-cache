@@ -1,13 +1,13 @@
-name: Local Test
+name: Test
 on:
   workflow_dispatch:
   push:
     branches: [ main ]
 
 env:
-  ASSERT_HASH_SINGLE_FILE: "a88123e024b2e9d91558cce56d286111:cf83e1357eefb8bd"
-  ASSERT_HASH_WITH_VARIANT: "a88123e024b2e9d91558cce56d286111:f7fbba6e0636f890"
-  ASSERT_HASH_FULL_SET: "439c756cf3d473983837ce0bbe71ca96:0a50261ebd1a390f"
+  ASSERT_HASH_SINGLE_FILE: "59dd465085e45174d1a9e0b41eeb4ee1:cf83e1357eefb8bd"
+  ASSERT_HASH_WITH_VARIANT: "59dd465085e45174d1a9e0b41eeb4ee1:f7fbba6e0636f890"
+  ASSERT_HASH_FULL_SET: "b28254efe7ae2354ade2471b6a7f2fd9:0a50261ebd1a390f"
 
 jobs:
   single_file_hash:
@@ -21,7 +21,7 @@ jobs:
         id: foo
         uses: ./
         with:
-          path: "./testdata/sample.txt"
+          path: "./testdata/sample1.txt"
 
       - name: Equal assertion test
         run: |
@@ -37,9 +37,9 @@ jobs:
 
       - name: Run action locally and expose results
         id: foo
-        uses: KEINOS/gh-action-hash-for-cache@main
+        uses: ./
         with:
-          path: "./testdata/sample.txt"
+          path: "./testdata/sample1.txt"
           variant: "foo"
 
       - name: Equal assertion test
@@ -59,7 +59,7 @@ jobs:
         uses: ./
         with:
           path: |
-            ./testdata/sample.txt
+            ./testdata/sample1.txt
             ./testdata/sample2.txt
           variant: "foobar"
 
@@ -78,7 +78,7 @@ jobs:
       - name: Make change
         run: |
           : # Append a new line to samples
-          echo "foo" >> ./testdata/sample.txt
+          echo "foo" >> ./testdata/sample1.txt
           echo "bar" >> ./testdata/sample2.txt
 
       - name: Run action locally and expose results
@@ -86,7 +86,7 @@ jobs:
         uses: ./
         with:
           path: |
-            ./testdata/sample.txt
+            ./testdata/sample1.txt
             ./testdata/sample2.txt
           variant: "foobar"
 
@@ -107,11 +107,13 @@ jobs:
         uses: ./
         with:
           path: |
-            ./testdata/sample.txt
+            ./testdata/sample1.txt
             ./testdata/sample2.txt
           variant: "foobarbuzz"
 
       - name: NotEqual assertion test
         run: |
-          [[ "${{ env.ASSERT_HASH_FULL_SET }}" != "${{ steps.foo.outputs.hash }}" ]]
+          expect="${{ env.ASSERT_HASH_FULL_SET }}"
+          actual="${{ steps.foo.outputs.hash }}"
+          [[ "${expect}" != "${actual}" ]]
         shell: bash
