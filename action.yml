@@ -1,5 +1,5 @@
-name: "File Hash for cache"
-description: 'Generates a hash of the given entry for cache key.'
+name: "File Hash for Cache"
+description: 'Generates a unique key (hash) from one or more files for caching.'
 author: 'KEINOS'
 
 branding:
