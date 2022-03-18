@@ -3,11 +3,12 @@
 
 # Unique Key (file hash) Generator for Caching
 
-This GitHub Action generates a unique key (file hash) from one or more files for caching. It works on Linux, macOS, and Windows runners.
+This GitHub Action generates a unique key (file hash) from one or more files for caching.
+
+It **works on Linux, macOS, and Windows runners**.
 
 ```yaml
-- name: <name of the step to display>
-  uses: KEINOS/gh-action-hash-for-cache@main
+- uses: KEINOS/gh-action-hash-for-cache@main
   id: <ID to call the hash from other steps>
   with:
     path: |
@@ -20,6 +21,7 @@ This GitHub Action generates a unique key (file hash) from one or more files for
 - `variant`: A string to be hashed. (Optional)
 - Exposed variable: `hash`
   - To obtain the hash value: `steps.<id>.outputs.hash`
+- Detailed examples follows.
 
 ## About
 
