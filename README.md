@@ -68,12 +68,11 @@ jobs:
 In this example, if "Dockerfile" is changed, the hash will be changed.
 
 ```yaml
-- name: Get a hash key from two files
+- name: Get a hash key from a file
   id: hash-now-dont-you-cry
   uses: KEINOS/gh-action-hash-for-cache@main
   with:
-    path: |
-      ./Dockerfile
+    path: ./Dockerfile
 
 - name: Activate caching
   id: cache
