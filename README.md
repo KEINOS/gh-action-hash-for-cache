@@ -148,3 +148,7 @@ In this example, if "go.mod" or "go.sum" is modified **or the month is changed**
     path: /path/target/dir/to/cache/and/restore
     key: ${{ steps.hash-now-dont-you-cry.outputs.hash }}
 ```
+
+### View working example
+
+- [workflows/unit-tests.yml](https://github.com/KEINOS/go-argonize/blob/main/.github/workflows/unit-tests.yml) @ [github.com/KEINOS/go-argonize](https://github.com/KEINOS/go-argonize)
