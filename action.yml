@@ -23,6 +23,7 @@ runs:
   using: "composite"
   steps:
     - id: local-hash
+      shell: bash
       run: |
         : # Set basic variables
         RUNNER_OS="${{ runner.os }}"
@@ -64,5 +65,6 @@ runs:
         :
         : # Final hash with the variant
         HASHED="${currHash:0:32}:${variHash:0:16}"
-        echo "::set-output name=hash::${HASHED}"
-      shell: bash
+        :
+        : # Export the hash to the output
+        echo "hash=${HASHED}" >> $GITHUB_OUTPUT
