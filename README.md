@@ -78,7 +78,7 @@ In this example, if "Dockerfile" is changed, the hash will be changed.
 
 - name: Activate caching
   id: cache
-  uses: actions/cache@v2
+  uses: actions/cache@v3
   with:
     path: /path/target/dir/to/cache/and/restore
     key: ${{ steps.hash-now-dont-you-cry.outputs.hash }}
@@ -97,7 +97,7 @@ Multiple target files can be specified. The below example, if "composer.json" or
 
 - name: Activate caching
   id: cache
-  uses: actions/cache@v2
+  uses: actions/cache@v3
   with:
     path: /path/target/dir/to/cache/and/restore
     key: ${{ steps.hash-now-dont-you-cry.outputs.hash }}
@@ -119,7 +119,7 @@ In this example, if "go.mod" or "go.sum" is modified **or the value of "variant"
 
 - name: Activate caching
   id: cache
-  uses: actions/cache@v2
+  uses: actions/cache@v3
   with:
     path: /path/target/dir/to/cache/and/restore
     key: ${{ steps.hash-now-dont-you-cry.outputs.hash }}
@@ -143,7 +143,7 @@ In this example, if "go.mod" or "go.sum" is modified **or the month is changed**
 
 - name: Activate caching
   id: cache
-  uses: actions/cache@v2
+  uses: actions/cache@v3
   with:
     path: /path/target/dir/to/cache/and/restore
     key: ${{ steps.hash-now-dont-you-cry.outputs.hash }}
