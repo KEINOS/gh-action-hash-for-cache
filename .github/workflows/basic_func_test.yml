@@ -15,7 +15,7 @@ jobs:
     name: Single file test
     steps:
       - name: Checkout
-        uses: actions/checkout@v3
+        uses: actions/checkout@v4
 
       - name: Run action locally and expose results
         id: foo
@@ -33,7 +33,7 @@ jobs:
     name: With variant test
     steps:
       - name: Checkout
-        uses: actions/checkout@v3
+        uses: actions/checkout@v4
 
       - name: Run action locally and expose results
         id: foo
@@ -52,7 +52,7 @@ jobs:
     name: Files and variant test
     steps:
       - name: Checkout
-        uses: actions/checkout@v3
+        uses: actions/checkout@v4
 
       - name: Run action locally and expose results
         id: foo
@@ -73,7 +73,7 @@ jobs:
     name: Files changes test
     steps:
       - name: Checkout
-        uses: actions/checkout@v3
+        uses: actions/checkout@v4
 
       - name: Make change
         run: |
@@ -100,7 +100,7 @@ jobs:
     name: Variant changes test
     steps:
       - name: Checkout
-        uses: actions/checkout@v3
+        uses: actions/checkout@v4
 
       - name: Run action locally and expose results
         id: foo
