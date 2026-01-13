@@ -31,7 +31,7 @@ It **works on Linux, macOS, and Windows runners**.
   - If the content of the entry is changed, a different hash will be obtained.
   - Useful to generate a unique key or ID for caching.
 - Works on Linux, macOS, and Windows runners.
-- Aims to be a helper action for "[actions/cache@v2](https://github.com/marketplace/actions/cache)".
+- Aims to be a helper action for "[actions/cache](https://github.com/marketplace/actions/cache)".
 - It is also possible to specify a time-limited hash.
 - Help us to fix [issues](https://github.com/KEINOS/gh-action-hash-for-cache/issues) @ GitHub.
 - View on [marketplace](https://github.com/marketplace/actions/file-hash-for-cache).
